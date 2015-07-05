@@ -22,6 +22,9 @@ trait Logging {
 
   private lazy val logger: Log = LogFactory.getLog(other.getClass())
 
+  protected def severe(message: => String) = log(logger.isDebugEnabled, logger.severe, message)
+  protected def error(message: => String) = log(logger.isDebugEnabled, logger.error, message)
+  protected def warn(message: => String) = log(logger.isDebugEnabled, logger.warn, message)
   protected def debug(message: => String) = log(logger.isDebugEnabled, logger.debug, message)
   protected def info(message: => String) = log(logger.isInfoEnabled, logger.info, message)
   private def log(fc: => Boolean, fl: (String) => Unit, message: String) = if(fc) fl(message)
