@@ -41,6 +41,7 @@ class Reducer[KIN, VIN, KOUT, VOUT](implicit kinTypeM: Manifest[KIN], vinTypeM: 
 	 * Run our reduce function, collect the output and save it into the context
 	 */
 	override def reduce(k: KIN, v: java.lang.Iterable[VIN], context: ContextType): Unit = {
+
     reducer.map(func => func(k, v, context).map(pair => context.write(pair._1, pair._2)))
 	}
 
@@ -48,6 +49,7 @@ class Reducer[KIN, VIN, KOUT, VOUT](implicit kinTypeM: Manifest[KIN], vinTypeM: 
 	 * Run our reduce function and return the raw output, may be useful during unit testing or troubleshooting
 	 */
 	def testF(k: KIN, v: java.lang.Iterable[VIN], context: ContextType) = {
+		debug("reducing under context "+context)
 		reducer.map(func => func(k, v, null))
 	}
 
@@ -57,6 +59,7 @@ class Reducer[KIN, VIN, KOUT, VOUT](implicit kinTypeM: Manifest[KIN], vinTypeM: 
 	def reduceWith(f:ReducerType) = reducer = Some(f)
 
   override def setup(context: ContextType) {
+    debug("setting up configuration for reducer")
     this.configuration = Option(context.getConfiguration)
   }
 }

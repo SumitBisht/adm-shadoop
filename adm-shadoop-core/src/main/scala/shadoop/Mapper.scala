@@ -47,10 +47,12 @@ abstract class Mapper[KIN, VIN, KOUT, VOUT](implicit kTypeM: Manifest[KOUT], vTy
   def vType = vTypeM.runtimeClass.asInstanceOf[Class[VOUT]]
 
 	override def map(k: KIN, v: VIN, context: ContextType): Unit = {
+    debug("running mapper with context "+context)
 		mapper.map(func => func(k, v, context).map(pair => context.write(pair._1, pair._2)))
   }
 
   override def setup(context: ContextType) {
+    debug("setting up configuration for mapper")
     this.configuration = Option(context.getConfiguration)
   }
 
@@ -63,10 +65,12 @@ abstract class TableMapper[KOUT, VOUT](implicit kTypeM: Manifest[KOUT], vTypeM: 
   def vType = vTypeM.runtimeClass.asInstanceOf[Class[Writable]]
 
   override def map(k: ImmutableBytesWritable, v: Result, ctx: ContextType): Unit = {
+    debug("running table mapper with context "+ctx)
     mapper.map(func => func(k, v, ctx).map(pair => ctx.write(pair._1, pair._2)))
   }
 
   override def setup(ctx: ContextType): Unit = {
+    debug("setting up configuration for table mapper")
     this.configuration = Option(ctx.getConfiguration)
   }
 
