@@ -95,6 +95,10 @@ class MapReduceTaskChain[KIN, VIN, KOUT, VOUT] extends Cloneable with Logging {
   def -->[KOUT1, VOUT1](mapper: Mapper[KOUT, VOUT, KOUT1, VOUT1])
   : MapReduceTaskChain[KIN, VIN, KOUT1, VOUT1] = this --> MapReduceTask(mapper, "NO NAME")
 
+  /** Adds a new link in the chain with a new node corresponding to executing that Map task with the corresponding name */
+  def -->[KOUT1, VOUT1](mapper: Mapper[KOUT, VOUT, KOUT1, VOUT1, name])
+  : MapReduceTaskChain[KIN, VIN, KOUT1, VOUT1] = this --> MapReduceTask(mapper, name)
+
 
   /** Add a confModifier to the current task by returning a copy of this chain
       with the confModifier pushed onto the confModifier list */
